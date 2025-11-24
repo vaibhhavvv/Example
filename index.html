@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiniShop — Sample Single-file E‑commerce</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#5eead4; --glass: rgba(255,255,255,0.04);
+      --max-width:1100px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    /* Reset */
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0; background: linear-gradient(180deg,#071123 0%, #081122 60%); color:#e6eef6; -webkit-font-smoothing:antialiased;}
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+
+    /* Layout */
+    .wrap{max-width:var(--max-width); margin:28px auto; padding:24px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:44px; height:44px; border-radius:8px; display:grid; place-items:center; background:linear-gradient(135deg,var(--accent),#60a5fa); color:#012; font-weight:700}
+    h1{font-size:18px; margin:0}
+    .search{flex:1; margin:0 18px}
+    .search input{width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:var(--glass); color:inherit}
+
+    .controls{display:flex; gap:12px; align-items:center}
+    .btn{background:linear-gradient(180deg,#0ea5a6,#0284c7); color:#022; padding:8px 12px; border-radius:8px; font-weight:600; cursor:pointer}
+    .icon-btn{background:transparent; border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:8px; cursor:pointer}
+
+    /* Hero */
+    .hero{display:flex; gap:20px; margin:28px 0; align-items:center}
+    .hero-left{flex:1}
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:20px; border-radius:14px}
+    .hero h2{margin:0 0 8px 0; font-size:26px}
+    .lead{color:var(--muted); margin-bottom:12px}
+
+    /* Grid */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:18px}
+    .product{background:var(--card); border-radius:12px; padding:14px; transition:transform .18s ease, box-shadow .18s ease}
+    .product:hover{transform:translateY(-6px); box-shadow:0 8px 30px rgba(2,6,23,0.7)}
+    .p-image{height:160px; border-radius:10px; overflow:hidden; display:grid; place-items:center; background:linear-gradient(180deg,#071729,#082033)}
+    .p-title{margin:10px 0 6px 0; font-weight:600}
+    .p-desc{font-size:13px; color:var(--muted); margin-bottom:8px}
+    .p-row{display:flex; justify-content:space-between; align-items:center}
+
+    /* Cart */
+    .cart-drawer{position:fixed; right:20px; top:80px; width:360px; max-width:calc(100% - 40px); background:#071022aa; border:1px solid rgba(255,255,255,0.04); backdrop-filter: blur(8px); padding:16px; border-radius:12px; box-shadow:0 10px 40px rgba(2,6,23,0.7); display:none}
+    .cart-drawer.open{display:block}
+    .cart-item{display:flex; gap:12px; margin-bottom:12px; align-items:center}
+    .cart-item img{width:56px; height:56px; border-radius:8px; object-fit:cover}
+    .muted{color:var(--muted)}
+
+    footer{margin:40px 0 20px; text-align:center; color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:720px){
+      .hero{flex-direction:column; align-items:stretch}
+      header{flex-direction:column; align-items:stretch}
+      .search{order:3}
+    }
+
+    /* Tiny utility */
+    .pill{background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:999px; font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">MS</div>
+        <div>
+          <h1>MiniShop</h1>
+          <div class="muted" style="font-size:12px">Sample single-file e‑commerce UI</div>
+        </div>
+      </div>
+
+      <div class="search">
+        <input id="search" placeholder="Search products, e.g. headphones" aria-label="Search products" />
+      </div>
+
+      <div class="controls">
+        <button class="icon-btn" id="view-favs" title="Favorites">❤</button>
+        <button class="btn" id="open-cart">Cart (<span id="cart-count">0</span>)</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-left hero-card">
+          <h2>Find curated products for everyday life.</h2>
+          <p class="lead">A small demo store: product grid, quick add-to-cart, mobile responsive layout. Use this file as a starting point for prototypes or teaching.</p>
+          <div style="display:flex; gap:8px">
+            <button class="btn" onclick="scrollToSection()">Browse products</button>
+            <a class="pill" href="#" onclick="alert('This is a mock store')">Learn more</a>
+          </div>
+        </div>
+        <div style="width:320px">
+          <div style="background:linear-gradient(180deg,#041428,#062033); padding:18px; border-radius:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+              <div>
+                <div style="font-size:13px" class="muted">Your balance</div>
+                <div style="font-weight:700; font-size:20px">₹1,250</div>
+              </div>
+              <div style="text-align:right">
+                <div class="muted" style="font-size:12px">Free shipping on orders ₹999+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="products">
+        <h3 style="margin:12px 0">Popular picks</h3>
+        <div class="grid" id="grid">
+          <!-- products injected by script -->
+        </div>
+      </section>
+    </main>
+
+    <div class="cart-drawer" id="cart">
+      <h4 style="margin:0 0 8px 0">Your cart</h4>
+      <div id="cart-items"></div>
+      <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:10px; margin-top:10px; display:flex; justify-content:space-between; align-items:center">
+        <div class="muted">Total</div>
+        <div style="font-weight:700">₹<span id="cart-total">0</span></div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+        <button class="icon-btn" onclick="closeCart()">Close</button>
+        <button class="btn" onclick="checkout()">Checkout</button>
+      </div>
+    </div>
+
+    <footer>
+      Built as a single HTML file • Not a real shop — demo data only
+    </footer>
+  </div>
+
+  <script>
+    // Demo product data
+    const products = [
+      {id:1, title:'Wireless Headphones', price:2499, desc:'Comfortable over-ear, 30h battery', img:'https://images.unsplash.com/photo-1518444023165-15f8aab6fa6b?auto=format&fit=crop&w=600&q=60'},
+      {id:2, title:'Mechanical Keyboard', price:3999, desc:'RGB, hot-swappable switches', img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=60'},
+      {id:3, title:'Travel Backpack', price:2199, desc:'Water-resistant, 25L capacity', img:'https://images.unsplash.com/photo-1562158070-6a3f94f97e6b?auto=format&fit=crop&w=600&q=60'},
+      {id:4, title:'Smart Watch', price:4999, desc:'Heart-rate and activity tracking', img:'https://images.unsplash.com/photo-1516570168276-8f07f08338f3?auto=format&fit=crop&w=600&q=60'},
+      {id:5, title:'Desk Lamp', price:799, desc:'Adjustable brightness, USB-C', img:'https://images.unsplash.com/photo-1582719478250-2c2b5b37f6a2?auto=format&fit=crop&w=600&q=60'},
+      {id:6, title:'Portable Speaker', price:1299, desc:'12h playtime, splashproof', img:'https://images.unsplash.com/photo-1518444023165-7b3e7b1d1b3e?auto=format&fit=crop&w=600&q=60'}
+    ];
+
+    // Simple state
+    const state = { cart: {} };
+
+    function formatINR(n){ return n.toLocaleString('en-IN'); }
+
+    // Render grid
+    const grid = document.getElementById('grid');
+    function renderProducts(list){
+      grid.innerHTML = '';
+      for(const p of list){
+        const card = document.createElement('article'); card.className='product';
+        card.innerHTML = `
+          <div class="p-image"><img src="${p.img}" alt="${p.title}"></div>
+          <div class="p-title">${p.title}</div>
+          <div class="p-desc">${p.desc}</div>
+          <div class="p-row">
+            <div style="font-weight:700">₹${formatINR(p.price)}</div>
+            <div>
+              <button class="icon-btn" onclick="quickAdd(${p.id})">Add</button>
+              <button class="icon-btn" onclick="showDetail(${p.id})">Details</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    function quickAdd(id){
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      state.cart[id] = (state.cart[id]||0) + 1;
+      refreshCartUI();
+      openCart();
+    }
+
+    function showDetail(id){
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      alert(p.title + '\n\n' + p.desc + '\n\nPrice: ₹' + formatINR(p.price));
+    }
+
+    // Cart UI
+    const cartEl = document.getElementById('cart');
+    function refreshCartUI(){
+      const container = document.getElementById('cart-items');
+      container.innerHTML='';
+      let total=0; let count=0;
+      for(const id in state.cart){
+        const qty = state.cart[id];
+        const p = products.find(x=>x.id==id);
+        if(!p) continue;
+        total += p.price * qty; count += qty;
+        const row = document.createElement('div'); row.className='cart-item';
+        row.innerHTML = `
+          <img src="${p.img}" alt="${p.title}">
+          <div style="flex:1">
+            <div style="font-weight:700">${p.title}</div>
+            <div class="muted">₹${formatINR(p.price)} × ${qty}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px">
+            <button class="icon-btn" onclick="changeQty(${id},1)">+</button>
+            <button class="icon-btn" onclick="changeQty(${id},-1)">−</button>
+          </div>
+        `;
+        container.appendChild(row);
+      }
+      document.getElementById('cart-total').textContent = formatINR(total);
+      document.getElementById('cart-count').textContent = count;
+    }
+
+    function changeQty(id, delta){
+      if(!state.cart[id]) return;
+      state.cart[id] += delta;
+      if(state.cart[id] <= 0) delete state.cart[id];
+      refreshCartUI();
+    }
+
+    function openCart(){ cartEl.classList.add('open'); }
+    function closeCart(){ cartEl.classList.remove('open'); }
+
+    function checkout(){
+      if(Object.keys(state.cart).length===0){ alert('Cart is empty'); return; }
+      alert('Checkout - this is a demo. Order not placed.');
+      state.cart = {}; refreshCartUI(); closeCart();
+    }
+
+    // Search
+    document.getElementById('search').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      if(!q) renderProducts(products);
+      else renderProducts(products.filter(p => (p.title + ' ' + p.desc).toLowerCase().includes(q)));
+    });
+
+    // Header controls
+    document.getElementById('open-cart').addEventListener('click', ()=>openCart());
+    document.getElementById('view-favs').addEventListener('click', ()=>alert('Favorites are not implemented in this demo'));
+
+    function scrollToSection(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }
+
+    // initial render
+    renderProducts(products);
+    refreshCartUI();
+  </script>
+</body>
+</html>
